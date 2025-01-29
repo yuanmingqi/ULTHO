@@ -302,6 +302,10 @@ if __name__ == "__main__":
         if cluster == 'lr':
             for param_group in optimizer.param_groups:
                 param_group["lr"] = sub_option
+        
+        # if change the vf_coef
+        if cluster == 'vf_coef':
+            args.vf_coef = sub_option
 
         writer.add_scalar("charts/cluster_idx", cluster_idx, global_step)
         # writer.add_scalar("charts/cluster", cluster, global_step)
