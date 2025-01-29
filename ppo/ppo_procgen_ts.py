@@ -297,13 +297,17 @@ if __name__ == "__main__":
         clipfracs = []
 
         # select TS hyperparameters
-        ts_action_idx, args.update_epochs = hp_ts.select_param()
-        writer.add_scalar("charts/ts_action_idx", ts_action_idx, global_step)
-        writer.add_scalar("charts/update_epochs", args.update_epochs, global_step)
-        for i in range(hp_ts.means.shape[0]):
-            writer.add_scalar(f"charts/mean_{i}", hp_ts.means[i], global_step)
-            writer.add_scalar(f"charts/std_{i}", hp_ts.stds[i], global_step)
-        print(f'iteration={iteration}, ts_action_idx={ts_action_idx}, update_epochs={args.update_epochs}')
+        cluster_idx, cluster, sub_option_idx, sub_option = hp_ts.select_param()
+        # if change the lr
+        if cluster == 'lr':
+            for param_group in optimizer.param_groups:
+                param_group["lr"] = sub_option
+
+        writer.add_scalar("charts/cluster_idx", cluster_idx, global_step)
+        # writer.add_scalar("charts/cluster", cluster, global_step)
+        writer.add_scalar("charts/sub_option_idx", sub_option_idx, global_step)
+        writer.add_scalar("charts/sub_option", sub_option, global_step)
+        print(f'iteration={iteration}, cluster={list(hp_clusters.keys())[cluster_idx]}, hp={sub_option}')
 
         # update TS values
         hp_ts.update_distribution(returns)

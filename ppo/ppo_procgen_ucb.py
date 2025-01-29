@@ -298,6 +298,11 @@ if __name__ == "__main__":
         # select UCB hyperparameters
         cluster_idx, cluster, sub_option_idx, sub_option = hp_ucb.select_ucb_option()
 
+        # if change the lr
+        if cluster == 'lr':
+            for param_group in optimizer.param_groups:
+                param_group["lr"] = sub_option
+
         writer.add_scalar("charts/cluster_idx", cluster_idx, global_step)
         # writer.add_scalar("charts/cluster", cluster, global_step)
         writer.add_scalar("charts/sub_option_idx", sub_option_idx, global_step)
