@@ -182,7 +182,8 @@ if __name__ == "__main__":
     # UCB setup
     hp_clusters = {
         'lr': [2.5e-4, 5e-4, 1e-3],
-        'vf_coef': [0.25, 0.5, 1.0]
+        # 'vf_coef': [0.25, 0.5, 1.0]
+        'bs': [512, 1024, 2048]
         }
     hp_ucb = UCBforClusters(cluster_dict=hp_clusters,
                             ucb_exploration_coef=args.expl_coef,
@@ -306,6 +307,10 @@ if __name__ == "__main__":
         # if change the vf_coef
         if cluster == 'vf_coef':
             args.vf_coef = sub_option
+
+        # if change the size of minibatches
+        if cluster == 'bs':
+            args.minibatch_size = sub_option
 
         writer.add_scalar("charts/cluster_idx", cluster_idx, global_step)
         # writer.add_scalar("charts/cluster", cluster, global_step)
