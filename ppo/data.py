@@ -20,6 +20,9 @@ def extract_and_save_event_data(event_file, output_file):
         "charts/SPS",
         "charts/episodic_return",
         "charts/episodic_length",
+        "charts/cluster_idx",
+        "charts/sub_option_idx",
+        "charts/sub_option",
         "h2o/cluster_idx",
         "h2o/sub_option_idx",
         "h2o/sub_option"
