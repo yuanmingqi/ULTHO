@@ -20,7 +20,9 @@ def extract_and_save_event_data(event_file, output_file):
         "charts/SPS",
         "charts/episodic_return",
         "charts/episodic_length",
-        "charts/update_epochs"
+        "h2o/cluster_idx",
+        "h2o/sub_option_idx",
+        "h2o/sub_option"
     ]
     
     # 初始化存储数据的字典
