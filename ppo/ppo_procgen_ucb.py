@@ -183,7 +183,8 @@ if __name__ == "__main__":
     hp_clusters = {
         'lr': [2.5e-4, 5e-4, 1e-3],
         'vfc': [0.25, 0.5, 1.0],
-        'bs': [512, 1024, 2048]
+        'bs': [512, 1024, 2048],
+        'ue': [3, 2, 1]
         }
     hp_ucb = UCBforClusters(cluster_dict=hp_clusters,
                             ucb_exploration_coef=args.expl_coef,
@@ -311,9 +312,13 @@ if __name__ == "__main__":
         # if change the size of minibatches
         if cluster == 'bs':
             args.minibatch_size = sub_option
+        
+        # if change the update_epochs
+        if cluster == 'ue':
+            args.update_epochs = sub_option
 
         writer.add_scalar("h2o/cluster_idx", cluster_idx, global_step)
-        # writer.add_scalar("charts/cluster", cluster, global_step)
+        # writer.add_scalar("h2o/cluster", cluster, global_step)
         writer.add_scalar("h2o/sub_option_idx", sub_option_idx, global_step)
         writer.add_scalar("h2o/sub_option", sub_option, global_step)
         print(f'iteration={iteration}, cluster={list(hp_clusters.keys())[cluster_idx]}, hp={sub_option}')
