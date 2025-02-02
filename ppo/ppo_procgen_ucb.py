@@ -181,10 +181,10 @@ if __name__ == "__main__":
 
     # UCB setup
     hp_clusters = {
-        'lr': [2.5e-4, 5e-4, 1e-3],
+        # 'lr': [2.5e-4, 5e-4, 1e-3],
         'vfc': [0.25, 0.5, 1.0],
-        'bs': [512, 1024, 2048],
-        'ue': [3, 2, 1]
+        # 'bs': [512, 1024, 2048],
+        # 'ue': [3, 2, 1]
         }
     hp_ucb = UCBforClusters(cluster_dict=hp_clusters,
                             ucb_exploration_coef=args.expl_coef,
