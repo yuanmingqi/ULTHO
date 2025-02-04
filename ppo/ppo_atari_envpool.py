@@ -157,7 +157,8 @@ if __name__ == "__main__":
     args.num_iterations = args.total_timesteps // args.batch_size
     run_name = f"{args.env_id}__{args.exp_name}__{args.seed}__{int(time.time())}"
 
-    writer = SummaryWriter(f"logs/{run_name}")
+    log_dir = 'ppo_ale_ext'
+    writer = SummaryWriter(f"{log_dir}/{run_name}")
     writer.add_text(
         "hyperparameters",
         "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in vars(args).items()])),
@@ -334,4 +335,4 @@ if __name__ == "__main__":
     writer.close()
 
     # save model
-    torch.save(agent.state_dict(), (f"runs/{run_name}/model.pth"))
+    torch.save(agent.state_dict(), (f"{log_dir}/{run_name}/model.pth"))
