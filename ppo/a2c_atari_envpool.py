@@ -260,8 +260,8 @@ if __name__ == "__main__":
 
         # Compute advantages
         mb_advantages = b_advantages
-        if args.norm_adv:
-            mb_advantages = (mb_advantages - mb_advantages.mean()) / (mb_advantages.std() + 1e-8)
+        # if args.norm_adv:
+        #     mb_advantages = (mb_advantages - mb_advantages.mean()) / (mb_advantages.std() + 1e-8)
 
         # Policy loss (A2C: logprob * advantage)
         pg_loss = (-newlogprob * mb_advantages).mean()
