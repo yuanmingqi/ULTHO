@@ -19,8 +19,8 @@ from ucb import UCBforClusters
 
 @dataclass
 class Args:
-    expl_coef: float = 5.0
-    window_length: int = 50
+    expl_coef: float = 1.0
+    window_length: int = 10
     device: str = 'cpu'
     exp_name: str = os.path.basename(__file__)[: -len(".py")]
     """the name of this experiment"""
@@ -181,10 +181,10 @@ if __name__ == "__main__":
 
     # UCB setup
     hp_clusters = {
-        # 'lr': [2.5e-4, 5e-4, 1e-3],
+        'lr': [2.5e-4, 5e-4, 1e-3],
         'vfc': [0.25, 0.5, 1.0],
-        # 'bs': [512, 1024, 2048],
-        # 'ue': [3, 2, 1]
+        'bs': [512, 1024, 2048],
+        'ue': [3, 2, 1]
         }
     hp_ucb = UCBforClusters(cluster_dict=hp_clusters,
                             ucb_exploration_coef=args.expl_coef,

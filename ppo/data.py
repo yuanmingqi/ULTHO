@@ -44,11 +44,12 @@ def extract_and_save_event_data(event_file, output_file):
     # 将数据保存为 npz 文件
     np.savez(output_file, steps=steps, data=data)
     print(f"Data extracted and saved to {output_file}")
-root = 'ucb_5321'
+root = 'a2c_ale_ext'
 
-envs = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot',
-        'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot'
-        ]
+# envs = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot',
+#         'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot'
+#         ]
+envs = ['Phoenix', 'Qbert']
 for env in envs:
     for dir in os.listdir(root):
         if env in dir:
