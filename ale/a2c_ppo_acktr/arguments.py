@@ -6,6 +6,10 @@ import torch
 def get_args():
     parser = argparse.ArgumentParser(description='RL')
     parser.add_argument(
+        '--expl_coef', type=float, default=5.0, help='exploration coefficient')
+    parser.add_argument(
+        '--window_length', type=int, default=10, help='window length')
+    parser.add_argument(
         '--algo', default='a2c', help='algorithm to use: a2c | ppo | acktr')
     parser.add_argument(
         '--gail',
