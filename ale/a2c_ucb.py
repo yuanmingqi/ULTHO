@@ -48,13 +48,15 @@ def main():
         base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
 
-    hp_clusters = {
+    cls_keys = args.cls.split('_')
+    all_clusters = {
         'lr': [7e-4, 5e-4, 1e-3],
         'vfc': [0.25, 0.5, 1.0],
         # 'bs': [512, 1024, 2048], # only for PPO
         # 'ue': [3, 2, 1] # only for PPO
         'ent': [0.01, 0.05, 0.1]
         }
+    hp_clusters = {k: all_clusters[k] for k in cls_keys}
     hp_ucb = UCBforClusters(cluster_dict=hp_clusters,
                             ucb_exploration_coef=args.expl_coef,
                             ucb_window_length=args.window_length
@@ -162,7 +164,7 @@ def main():
                         action_loss))
 
     # save the selected options
-    np.savez(f'a2c_ucb_{args.env_name}_s{args.seed}_decisions.npz', 
+    np.savez(f'{args.log_dir}/a2c_ucb_{args.env_name}_s{args.seed}_decisions.npz', 
              options=all_selected_options, suboptions=all_selected_suboptions)
 
 if __name__ == "__main__":

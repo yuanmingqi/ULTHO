@@ -6,6 +6,8 @@ import torch
 def get_args():
     parser = argparse.ArgumentParser(description='RL')
     parser.add_argument(
+        '--cls', type=str)
+    parser.add_argument(
         '--expl_coef', type=float, default=5.0, help='exploration coefficient')
     parser.add_argument(
         '--window_length', type=int, default=10, help='window length')
