@@ -1,3 +1,4 @@
+from ast import arg
 import copy
 import glob
 import os
@@ -78,6 +79,9 @@ def main():
 
     episode_rewards = deque(maxlen=10)
 
+    all_selected_options = []
+    all_selected_suboptions = []
+
     start = time.time()
     num_updates = int(
         args.num_env_steps) // args.num_steps // args.num_processes
@@ -122,6 +126,8 @@ def main():
 
         # select UCB hyperparameters
         cluster_idx, cluster, sub_option_idx, sub_option = hp_ucb.select_ucb_option()
+        all_selected_options.append(cluster_idx)
+        all_selected_suboptions.append(sub_option_idx)
 
         # if change the lr
         if cluster == 'lr':
@@ -155,6 +161,9 @@ def main():
                         np.max(episode_rewards), dist_entropy, value_loss,
                         action_loss))
 
+    # save the selected options
+    np.savez(f'a2c_ucb_{args.env_name}_s{args.seed}_decisions.npz', 
+             options=all_selected_options, suboptions=all_selected_suboptions)
 
 if __name__ == "__main__":
     main()
