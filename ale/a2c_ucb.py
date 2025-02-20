@@ -50,7 +50,7 @@ def main():
 
     cls_keys = args.cls.split('_')
     all_clusters = {
-        'lr': [7e-4, 5e-4, 1e-3],
+        'lr': [7e-4, 5e-4, 1e-4],#[7e-4, 5e-4, 1e-3],
         'vfc': [0.25, 0.5, 1.0],
         # 'bs': [512, 1024, 2048], # only for PPO
         # 'ue': [3, 2, 1] # only for PPO

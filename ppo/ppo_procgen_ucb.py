@@ -19,7 +19,7 @@ from ucb import UCBforClusters
 
 @dataclass
 class Args:
-    expl_coef: float = 1.0
+    expl_coef: float = 5.0
     window_length: int = 10
     device: str = 'cpu'
     exp_name: str = os.path.basename(__file__)[: -len(".py")]
@@ -190,6 +190,12 @@ if __name__ == "__main__":
                             ucb_exploration_coef=args.expl_coef,
                             ucb_window_length=args.window_length
                             )
+    # save ucb values 
+    hp_ucb_qval_action = {key: [] for key in hp_clusters.keys()}
+    hp_ucb_qval_action['cluster'] = []
+    hp_ucb_expl_action = {key: [] for key in hp_clusters.keys()}
+    hp_ucb_expl_action['cluster'] = []
+
     tag = '_'.join(hp_clusters.keys())
     log_dir = f'ppo_ucb_runs_{tag}'
 
@@ -326,6 +332,13 @@ if __name__ == "__main__":
         # update UCB values
         hp_ucb.update_ucb_values(returns)
 
+        # save ucb values
+        for key in hp_clusters.keys():
+            hp_ucb_qval_action[key].append(hp_ucb.sub_ucbs[key].qval_action.copy())
+            hp_ucb_expl_action[key].append(hp_ucb.sub_ucbs[key].expl_action.copy())
+        hp_ucb_qval_action['cluster'].append(hp_ucb.cluster_ucb.qval_action.copy())
+        hp_ucb_expl_action['cluster'].append(hp_ucb.cluster_ucb.expl_action.copy())
+
         for epoch in range(args.update_epochs):
             np.random.shuffle(b_inds)
             for start in range(0, args.batch_size, args.minibatch_size):
@@ -398,3 +411,6 @@ if __name__ == "__main__":
 
     # save model
     torch.save(agent.state_dict(), (f"{log_dir}/{run_name}/model.pth"))
+    np.savez(f"{log_dir}/{run_name}/ucb_values.npz", 
+             qval_action=hp_ucb_qval_action,
+             expl_action=hp_ucb_expl_action)

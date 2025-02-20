@@ -47,41 +47,32 @@ def main():
         base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
 
-    hp_clusters = {
-        'lr': [2.5e-4, 5e-4, 1e-3],
+    cls_keys = args.cls.split('_')
+    all_clusters = {
+        # 'lr': [1e-4, 2.5e-4, 5e-4],
         'vfc': [0.25, 0.5, 1.0],
-        'bs': [512, 1024, 2048],
-        # 'ue': [3, 2, 1] # only for PPO
+        'bs': [4, 2, 8],
+        'ue': [4, 2, 1], # only for PPO
         'ent': [0.01, 0.05, 0.1]
         }
+    hp_clusters = {k: all_clusters[k] for k in cls_keys}
     hp_ucb = UCBforClusters(cluster_dict=hp_clusters,
                             ucb_exploration_coef=args.expl_coef,
                             ucb_window_length=args.window_length
                             )
+    all_selected_options = []
+    all_selected_suboptions = []
 
-    if args.algo == 'a2c':
-        agent = algo.A2C_ACKTR(
-            actor_critic,
-            args.value_loss_coef,
-            args.entropy_coef,
-            lr=args.lr,
-            eps=args.eps,
-            alpha=args.alpha,
-            max_grad_norm=args.max_grad_norm)
-    elif args.algo == 'ppo':
-        agent = algo.PPO(
-            actor_critic,
-            args.clip_param,
-            args.ppo_epoch,
-            args.num_mini_batch,
-            args.value_loss_coef,
-            args.entropy_coef,
-            lr=args.lr,
-            eps=args.eps,
-            max_grad_norm=args.max_grad_norm)
-    elif args.algo == 'acktr':
-        agent = algo.A2C_ACKTR(
-            actor_critic, args.value_loss_coef, args.entropy_coef, acktr=True)
+    agent = algo.PPO(
+        actor_critic,
+        args.clip_param,
+        args.ppo_epoch,
+        args.num_mini_batch,
+        args.value_loss_coef,
+        args.entropy_coef,
+        lr=args.lr,
+        eps=args.eps,
+        max_grad_norm=args.max_grad_norm)
 
 
     rollouts = RolloutStorage(args.num_steps, args.num_processes,
@@ -138,23 +129,29 @@ def main():
 
         # select UCB hyperparameters
         cluster_idx, cluster, sub_option_idx, sub_option = hp_ucb.select_ucb_option()
+        all_selected_options.append(cluster_idx)
+        all_selected_suboptions.append(sub_option_idx)
 
         # if change the lr
-        if cluster == 'lr':
-            for param_group in optimizer.param_groups:
-                param_group["lr"] = sub_option
+        # if cluster == 'lr':
+        #     for param_group in agent.optimizer.param_groups:
+        #         param_group["lr"] = sub_option
 
         # if change the vf_coef
         if cluster == 'vfc':
-            args.vf_coef = sub_option
+            agent.value_loss_coef = sub_option
 
         # if change the size of minibatches
         if cluster == 'bs':
-            args.minibatch_size = sub_option
+            agent.num_mini_batch = sub_option
+        
+        # if change the size of minibatches
+        if cluster == 'ent':
+            agent.entropy_coef = sub_option
 
         # if change the update_epochs
-        # if cluster == 'ue':
-        #     args.update_epochs = sub_option
+        if cluster == 'ue':
+            agent.ppo_epoch = sub_option
 
         if j > 0:
             hp_ucb.update_ucb_values(rollouts.returns)
@@ -174,6 +171,10 @@ def main():
                         np.median(episode_rewards), np.min(episode_rewards),
                         np.max(episode_rewards), dist_entropy, value_loss,
                         action_loss))
+
+    # save the selected options
+    np.savez(f'{args.log_dir}/ppo_ucb_{args.env_name}_s{args.seed}_decisions.npz', 
+             options=all_selected_options, suboptions=all_selected_suboptions)
 
 
 if __name__ == "__main__":
