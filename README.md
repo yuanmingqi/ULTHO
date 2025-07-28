@@ -1,4 +1,4 @@
-# Official code of the ICCV2025 paper "ULTHO: Ultra-Lightweight yet Efficient Hyperparameter Optimization in\\Deep Reinforcement Learning"
+# Official code of the ICCV2025 paper "ULTHO: Ultra-Lightweight yet Efficient Hyperparameter Optimization in Deep Reinforcement Learning"
 
 # Installation
 
